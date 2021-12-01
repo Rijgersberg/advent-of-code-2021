@@ -4,11 +4,7 @@ from aoc import get_input
 depths = [int(x) for x in get_input(day=1)]
 
 # 1-1
-total = 0
-for i in range(len(depths) - 1):
-    if depths[i+1] > depths[i]:
-        total += 1
-print(total)
+print(sum(next_ > prev for next_, prev in zip(depths[1:], depths[:-1])))
 
 
 # 1-2
