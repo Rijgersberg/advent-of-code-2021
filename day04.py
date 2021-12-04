@@ -59,13 +59,13 @@ print(play(bingo_numbers, deepcopy(boards)))
 
 # 4-2
 def play2(bingo_numbers, boards):
-    won = set(range(len(boards)))
+    not_won_yet = set(range(len(boards)))
 
     for number in bingo_numbers:
         for i, board in enumerate(boards):
             board.add(number)
             if board.bingo():
-                won -= {i}
-            if won == set():
+                not_won_yet -= {i}
+            if not_won_yet == set():
                 return number * board.score()
 print(play2(bingo_numbers, deepcopy(boards)))
