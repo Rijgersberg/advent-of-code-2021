@@ -4,7 +4,7 @@ from aoc import get_input
 
 
 def play(line, T):
-    fish = dict(Counter([int(x) for x in line.split(',')]))
+    fish = Counter(int(x) for x in line.split(','))
     for t in range(1, T+1):
         next_fish = defaultdict(int)
         for timer, n in fish.items():
