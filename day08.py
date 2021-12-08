@@ -52,8 +52,8 @@ def solve(lines):
         total1 += sum(len(digit) in {2, 3, 4, 7} for digit in output)
 
         mapping = brute_force(input_)
-        total2 += int(''.join(str(DIGITS[frozenset(mapping[c] for c in out)])
-                              for out in output))
+        total2 += int(''.join(str(DIGITS[frozenset(mapping[c] for c in digit)])
+                              for digit in output))
     return total1, total2
 
 
