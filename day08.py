@@ -32,16 +32,6 @@ DIGITS = {frozenset('abcefg'): 0,
           frozenset('abcdefg'): 8,
           frozenset('abcdfg'): 9}
 
-MYSTERY_DIGITS = {letters: digit for letters, digit in DIGITS.items() if digit not in {1, 4, 7, 8}}
-
-
-def part1(lines):
-    total = 0
-    for line in lines:
-        input_, output = line.split(' | ')
-        total += sum(len(digit) in {2, 3, 4, 7} for digit in output.split())
-    return total
-
 
 def brute_force(codes):
     for attempt in permutations('abcdefg'):
@@ -52,17 +42,19 @@ def brute_force(codes):
     raise ValueError
 
 
-def part2(lines):
-    total = 0
+def solve(lines):
+    total1 = 0
+    total2 = 0
     for line in lines:
-        input_, output = line.split(' | ')
-        mapping = brute_force(input_.split())
+        input_, output = (part.split() for part in line.split(' | '))
 
-        total += int(''.join(str(DIGITS[frozenset(mapping[c] for c in out)]) for out in output.split()))
-    return total
+        # digits with unique lengths
+        total1 += sum(len(digit) in {2, 3, 4, 7} for digit in output)
+
+        mapping = brute_force(input_)
+        total2 += int(''.join(str(DIGITS[frozenset(mapping[c] for c in out)])
+                              for out in output))
+    return total1, total2
 
 
-print(get_input(day=8))
-print(part1(get_input(day=8)))
-print(part2(get_input(day=8)))
-
+print(solve(get_input(day=8)))
