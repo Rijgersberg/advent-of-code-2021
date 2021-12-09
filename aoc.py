@@ -20,7 +20,7 @@ def get_input(day, as_list=True):
             with open(filepath, 'w') as ipt_file:
                 ipt_file.write(response.text)
         else:
-            raise(ValueError(response.text))
+            raise ValueError(response.text)
 
     with open(filepath) as f:
         if as_list:
