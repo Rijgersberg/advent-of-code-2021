@@ -28,15 +28,15 @@ def find(target, path, rule):
     current = path[-1]
 
     if current == target:
-        return {path}
+        return 1
 
-    found_paths = set()
+    found_paths = 0
     for nxt in edgelist[current]:
         if nxt != 'start' and rule(path, nxt):
-            found_paths |= find(target, path + (nxt,), rule)
+            found_paths += find(target, path + (nxt,), rule)
     return found_paths
 
 
 edgelist = parse(get_input(day=12))
-print(len(find('end', ('start', ), rule=rule1)))
-print(len(find('end', ('start', ), rule=rule2)))
+print(find('end', ('start', ), rule=rule1))
+print(find('end', ('start', ), rule=rule2))
