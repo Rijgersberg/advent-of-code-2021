@@ -13,7 +13,7 @@ def parse(lines):
 
 
 def rule1(path, nxt):
-    return not (nxt.islower() and nxt in path[:-1])
+    return not (nxt.islower() and nxt in path)
 
 
 def rule2(path, nxt):
