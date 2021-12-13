@@ -24,7 +24,6 @@ def reset(octopi):
         for c, o in enumerate(row):
             if o is None:
                 octopi[r][c] = 0
-
     return octopi
 
 def search(octopi, n):

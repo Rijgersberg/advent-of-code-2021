@@ -9,13 +9,9 @@ from aoc import get_input
 def parse(lines):
     dot_lines, fold_lines = lines.split('\n\n')
 
-    dots = []
-    for line in dot_lines.splitlines():
-        x, y = line.split(',')
-        dots.append((int(x), int(y)))
-
-    sheet = np.full((max(d[0] for d in dots)+1, max(d[1] for d in dots)+1), False)
-    print(sheet.shape)
+    dots = [tuple(map(int, line.split(','))) for line in dot_lines.splitlines()]
+    X, Y = max(d[0] for d in dots)+1, max(d[1] for d in dots)+1
+    sheet = np.full((X, Y), False)
     for x, y in dots:
         sheet[x, y] = True
 
@@ -30,20 +26,20 @@ def parse(lines):
 sheet, folds = parse(get_input(day=13, as_list=False))
 
 for i, (direc, l) in enumerate(folds):
-    if direc == 'x':
+    if direc == 'y':
+        sheet = sheet.T
+
+    if 2*l + 1 > sheet.shape[0]:
         empty_sheet = np.full((2*l + 1, sheet.shape[1]), False)
         empty_sheet[:sheet.shape[0], :sheet.shape[1]] = sheet
         sheet = empty_sheet
 
-        left, right = sheet[:l, :], sheet[l+1:, :]
-        sheet = left + np.flip(right, axis=0)
-    else:
-        empty_sheet = np.full((sheet.shape[0], 2*l + 1), False)
-        empty_sheet[:sheet.shape[0], :sheet.shape[1]] = sheet
-        sheet = empty_sheet
+    left, right = sheet[:l, :], sheet[l+1:, :]
+    sheet = left + np.flip(right, axis=0)
 
-        up, down = sheet[:, :l], sheet[:, l+1:]
-        sheet = up + np.flip(down, axis=1)
+    if direc == 'y':
+        sheet = sheet.T
+
     if i == 0:
         print(sheet.sum())
 

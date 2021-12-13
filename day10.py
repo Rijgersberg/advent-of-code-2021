@@ -9,7 +9,7 @@ score_table = {')': 3,
 opening = '([{<'
 closing = ')]}>'
 
-def corrupted(line):
+def process(line):
     to_close = deque()
     for i, c in enumerate(line):
         if c in opening:
@@ -25,7 +25,7 @@ lines = get_input(day=10)
 score1 = 0
 scores2 = []
 for line in lines:
-    pos, missing, to_close = corrupted(line)
+    pos, missing, to_close = process(line)
     if missing is not None:
         score1 += score_table[missing]
     else:
