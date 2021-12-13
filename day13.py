@@ -1,5 +1,7 @@
 import re
 
+from PIL import Image
+import pytesseract as pytesseract
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -43,5 +45,10 @@ for i, (direc, l) in enumerate(folds):
     if i == 0:
         print(sheet.sum())
 
-plt.imshow(sheet.T)
-plt.show()
+
+fig = plt.figure(figsize=(1.5, 0.75), dpi=100)
+plt.imshow(sheet.T, cmap='binary')
+plt.axis('off')
+plt.savefig('day13-2.png')
+
+print(pytesseract.image_to_string(Image.open('day13-2.png')))
