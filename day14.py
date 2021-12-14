@@ -1,77 +1,47 @@
-from collections import Counter
-from dataclasses import dataclass
-from typing import Optional
-
-from tqdm import tqdm
+from collections import defaultdict
+from itertools import pairwise
+from operator import itemgetter
 
 from aoc import get_input
 
-@dataclass
-class Chemical:
-    element: str
-    next: Optional['Chemical']
 
 polymer, rule_lines = get_input(day=14, as_list=False).split('\n\n')
-# polymer, rule_lines = '''NNCB
-#
-# CH -> B
-# HH -> N
-# CB -> H
-# NH -> C
-# HB -> C
-# HC -> B
-# HN -> C
-# NN -> C
-# BH -> H
-# NC -> B
-# NB -> B
-# BN -> B
-# BB -> N
-# BC -> B
-# CC -> N
-# CN -> C'''.split('\n\n')
 
-next_ = Chemical(polymer[-1], None)
-for i in range(len(polymer)-1, 0, -1):
-    prev = Chemical(polymer[i-1], next_)
-    next_ = prev
+pairs = defaultdict(int)
+for a, b in pairwise(polymer):
+    pairs[a+b] += 1
 
 rules = {}
 for rule in rule_lines.splitlines():
     key, value = rule.split(' -> ')
     rules[key] = value
 
-def show(prev):
-    chars = []
-    while prev.next is not None:
-        chars.append(prev.element)
-        prev = prev.next
-    chars.append(prev.element)
-    print(''.join(chars))
+
+def count_single_letters(pairs):
+    counts = defaultdict(int)
+    for pair, count in pairs.items():
+        a, b = pair
+        counts[a] += count / 2
+        counts[b] += count / 2
+    counts[polymer[0]] += 0.5
+    counts[polymer[-1]] += 0.5
+    return {k: int(v) for k, v in counts.items()}
 
 
-def score(start):
-    prev = start
-    counter = Counter()
-    while prev.next is not None:
-        counter.update([prev.element])
-        prev = prev.next
+for t in range(1, 40+1):
+    new_pairs = defaultdict(int)
+    for pair, count in pairs.items():
+        if pair in rules:
+            a, b = pair
+            inserted = rules[pair]
+            new_pairs[a+inserted] += count
+            new_pairs[inserted+b] += count
+        else:
+            new_pairs[pair] += count
+    pairs = new_pairs
 
-    counter.update([prev.element])
-    counts = counter.most_common()
-    print(counts[0][1])
-    return counts[0][1] - counts[-1][1]
-
-start = prev
-for t in tqdm(range(1, 40+1)):
-    prev = start
-
-    # show(prev)
-
-    while prev.next is not None:
-        next = prev.next
-        if (key := prev.element + next.element) in rules:
-            insert = Chemical(rules[key], next)
-            prev.next = insert
-        prev = next
-    score(start)
+    if t == 10 or t == 40:
+        letter_counts = [v for k, v in sorted(count_single_letters(pairs).items(),
+                                              key=itemgetter(1),
+                                              reverse=True)]
+        print(letter_counts[0] - letter_counts[-1])
