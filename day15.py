@@ -20,11 +20,9 @@ def neighbors(r, c):
 
 
 def dijkstra(risks, start, target):
-    unvisited = {tuple(x) for x in risks.keys()}
+    unvisited = set(risks.keys())
 
-    distances = {k: float('inf') for k in unvisited}
-    distances[start] = 0
-
+    distances = {start: 0}
     dist_heap = [(0, start)]
     heapify(dist_heap)
 
@@ -40,7 +38,7 @@ def dijkstra(risks, start, target):
         for n in neighbors(*current):
             if n in unvisited:
                 tentative_d = current_dist + risks[n]
-                if tentative_d < distances[n]:
+                if n not in distances or tentative_d < distances[n]:
                     heappush(dist_heap, (tentative_d, n))
                     distances[n] = tentative_d
         unvisited.remove(current)
